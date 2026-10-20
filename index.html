@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NEON RUSH — Neo-Arcade Cyberpunk Runner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Всплывающее уведомление (Toast) -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- ШАПКА / НАВИГАЦИЯ -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="logo">
+        <span class="logo-neon">NEON</span><span class="logo-accent">RUSH</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#hero" class="nav-link active">Главная</a>
+        <a href="#game-section" class="nav-link">Игра</a>
+        <a href="#about-section" class="nav-link">Об игре</a>
+        <a href="#records-section" class="nav-link">Рекорды</a>
+      </nav>
+      <a href="#game-section" class="btn btn-primary btn-sm btn-glow">PLAY NOW</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ГЛАВНЫЙ ЭКРАН (HERO) -->
+    <section id="hero" class="hero-section">
+      <div class="hero-bg-grid"></div>
+      <div class="hero-content">
+        <h1 class="hero-title">NEON <span class="text-pink">RUSH</span></h1>
+        <p class="hero-subtitle">SURVIVE THE NEON NIGHT</p>
+        <p class="hero-desc">Динамичный аркадный survival-platformer в стиле киберпанк. Беги по неоновому мегаполису, уклоняйся от дронов и собирай энергию.</p>
+        <div class="hero-cta">
+          <a href="#game-section" id="hero-start-btn" class="btn btn-primary btn-lg btn-glow">START GAME</a>
+          <div class="hero-highscore">
+            <span class="label">BEST SCORE:</span>
+            <span id="hero-best-val" class="val">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ИГРОВАЯ ЗОНА -->
+  <section id="game-section" class="game-section">
+    <div class="game-container">
+      
+      <!-- Панель HUD -->
+      <div class="hud-panel">
+        <div class="hud-stat">
+          <span class="hud-label">SCORE</span>
+          <span id="hud-score" class="hud-value hud-cyan">00000</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">HIGH SCORE</span>
+          <span id="hud-highscore" class="hud-value hud-pink">00000</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">CRYSTALS</span>
+          <span id="hud-crystals" class="hud-value hud-purple">💎 0</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">HEALTH</span>
+          <div id="hud-health" class="hud-health-bar">
+            <span class="hp-heart">❤️</span>
+            <span class="hp-heart">❤️</span>
+            <span class="hp-heart">❤️</span>
+          </div>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">SPEED</span>
+          <span id="hud-speed" class="hud-value">1.0x</span>
+        </div>
+        <div class="hud-actions">
+          <button id="btn-sound" class="btn-icon" title="Звук Вкл/Выкл">🔊</button>
+          <button id="btn-pause" class="btn-icon" title="Пауза (Esc)">⏸️</button>
+        </div>
+      </div>
+
+      <!-- Canvas игрового поля -->
+      <div class="canvas-wrapper">
+        <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+        <!-- Оверлей экрана Старт / Пауза / Game Over -->
+        <div id="game-overlay" class="game-overlay">
+          <div id="overlay-content" class="overlay-box">
+            <h2 id="overlay-title" class="overlay-title">NEON RUSH</h2>
+            <p id="overlay-subtitle" class="overlay-subtitle">Готов погрузиться в неоновый ритм?</p>
+            
+            <div id="overlay-stats" class="overlay-stats hidden">
+              <div class="stat-row"><span>Финишный счет:</span><strong id="final-score" class="hud-cyan">0</strong></div>
+              <div class="stat-row"><span>Собрано кристаллов:</span><strong id="final-crystals" class="hud-purple">0</strong></div>
+              <div class="stat-row"><span>Лучший результат:</span><strong id="final-best" class="hud-pink">0</strong></div>
+            </div>
+
+            <div class="overlay-buttons">
+              <button id="overlay-primary-btn" class="btn btn-primary btn-lg btn-glow">START GAME</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Сенсорное управление для мобильных устройств -->
+      <div class="touch-controls">
+        <button id="touch-slide" class="touch-btn">⬇️ SLIDE</button>
+        <button id="touch-jump" class="touch-btn touch-btn-primary">⬆️ JUMP</button>
+      </div>
+
+      <!-- Подсказка по управлению -->
+      <div class="controls-guide">
+        <span>Управление: <strong>[Пробел / ⬆️]</strong> Прыжок (Двойной прыжок) | <strong>[⬇️]</strong> Скольжение | <strong>[Esc]</strong> Пауза</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ ABOUT -->
+  <section id="about-section" class="about-section">
+    <div class="section-container">
+      <h2 class="section-title"><span class="text-cyan">ОБ</span> ИГРЕ</h2>
+      <p class="section-subtitle">Погрузись в атмосферу неонового киберпанка 80-х годов</p>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="card-icon">⚡</div>
+          <h3>Динамичный геймплей</h3>
+          <p>Скорость мира постепенно увеличивается! Прокачивай реакцию, рассчитывай тайминги прыжков и уклонений.</p>
+        </div>
+        <div class="about-card">
+          <div class="card-icon">💎</div>
+          <h3>Кристаллы и очки</h3>
+          <p>Собирай неоновые энерго-кристаллы, чтобы получать бонусные очки и устанавливать невероятные рекорды.</p>
+        </div>
+        <div class="about-card">
+          <div class="card-icon">🛡️</div>
+          <h3>Система жизней</h3>
+          <p>У тебя есть 3 жизни. Избегай столкновений с опасными барьерами и летающими дронами безопасности.</p>
+        </div>
+        <div class="about-card">
+          <div class="card-icon">🎵</div>
+          <h3>Аудио и Синтез</h3>
+          <p>Интерактивные 8-битные звуковые эффекты, созданные через Web Audio API прямо в твоем браузере.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ RECORDS -->
+  <section id="records-section" class="records-section">
+    <div class="section-container">
+      <h2 class="section-title">ЛИЧНЫЕ <span class="text-pink">РЕКОРДЫ</span></h2>
+      <p class="section-subtitle">Все твои достижения сохраняются автоматически</p>
+
+      <div class="records-card">
+        <div class="records-stats-grid">
+          <div class="rec-box">
+            <span class="rec-label">РЕКОРД ОЧКОВ</span>
+            <span id="rec-high-score" class="rec-val text-cyan">0</span>
+          </div>
+          <div class="rec-box">
+            <span class="rec-label">ВСЕГО КРИСТАЛЛОВ</span>
+            <span id="rec-total-crystals" class="rec-val text-purple">0</span>
+          </div>
+        </div>
+
+        <div class="records-actions">
+          <button id="btn-reset-records" class="btn btn-danger">Сбросить статистику</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <!-- ПОДВАЛ -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-logo">NEON RUSH</div>
+      <p class="footer-quote">INSERT COIN. BREAK LIMITS.</p>
+      <p class="footer-copy">&copy; NEO-ARCADE SYSTEM. ALL RIGHTS RESERVED.</p>
+    </div>
+  </footer>
+
+  <script src="index.js"></script>
+</body>
+</html>
